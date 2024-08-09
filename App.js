@@ -2,14 +2,25 @@
 import { useState } from "react";
 import { StyleSheet,
          View,
-         FlatList} from 'react-native';
+         FlatList,
+         Button} from 'react-native';
+import { StatusBar } from "expo-status-bar";
 
 import GoalItem from "./Components/GoalItem"; // In JSX, we wants to be clear taht this is custom components so it's starting with capital letter
 import GoalInput from "./Components/GoalInput";
 
 export default function App() {
+  const [modalIsVisible, setModalIsVisible] = useState(false);
   const [courseGoals, setCourseGoals] = useState([]);
   // setCourseGoals - updating function
+
+  function startAddGoalHandler() {
+    setModalIsVisible(true);
+  }
+
+  function endAddGoalHandler() {
+    setModalIsVisible(false);
+  }
 
   function addGoalHandler(enteredText) {
     setCourseGoals( (currentCourseGoals) => [
@@ -18,6 +29,7 @@ export default function App() {
       { text: enteredText, id: Math.random().toString() } // we need to use keyExtractor for this
       // enteredText
     ]);
+    endAddGoalHandler();
   };
 
   function deleteGoalHandler(id) {
@@ -27,8 +39,18 @@ export default function App() {
   }
 
   return (
+    <>
+    <StatusBar style='light' />
     <View style={styles.appContainer}>
-      <GoalInput onAddGoal={addGoalHandler} />
+      <Button title="Add New Goal"
+              color="#a065ec"
+              onPress={startAddGoalHandler}
+      />
+      <GoalInput
+          visible={modalIsVisible}
+          onAddGoal={addGoalHandler}
+          onCancel={endAddGoalHandler}
+      />
       <View style={ styles.goalsContainer }>
         <FlatList
           data={courseGoals}
@@ -45,6 +67,7 @@ export default function App() {
           alwaysBounceVertical={false} />
       </View>
     </View>
+    </>
   );
 }
 
@@ -52,24 +75,8 @@ const styles = StyleSheet.create({
   appContainer: {
     paddingTop: 75,
     paddingHorizontal: 22,
-    flex: 1
+    flex: 1,
   },
-  // inputContainer: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   marginBottom: 24,
-  //   borderBottomColor: '#cccccc',
-  //   borderBottomWidth: 1
-  // },
-  // textInput: {
-  //   borderWidth: 1,
-  //   borderBlockColor: '#cccccc',
-  //   width: '70%',
-  //   marginRight: 8,
-  //   padding: 8
-  // },
   goalsContainer: {
     flex: 5
   }
