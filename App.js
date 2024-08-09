@@ -1,12 +1,12 @@
 
 import { useState } from "react";
 import { StyleSheet,
-         Text,
          View,
          Button,
          TextInput,
-         ScrollView,
          FlatList} from 'react-native';
+
+import GoalItem from "./Components/GoalItem"; // In JSX, we wants to be clear taht this is custom components so it's starting with capital letter
 
 export default function App() {
 
@@ -42,12 +42,8 @@ export default function App() {
         <FlatList
           data={courseGoals}
           renderItem={ (itemData) => {
-            return (
-              <View style={styles.goalItem}>
-                <Text style={styles.goalText}> {itemData.item.text} </Text>
-              </View>
-            );
-          } }
+            return <GoalItem />
+          }}
           keyExtractor={(item, index) => {
             return item.id;
           }}
@@ -81,15 +77,5 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     flex: 5
-  },
-  goalItem: {
-    margin: 8,
-    padding: 8,
-    borderRadius: 6, // would not work on iOS
-    backgroundColor: '#5e0acc',
-    lineHeight: 20,
-  },
-  goalText: {
-    color: 'white',
   }
 });
