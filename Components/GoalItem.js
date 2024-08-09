@@ -10,7 +10,6 @@ function goalItem(props) {
 
 export default goalItem;
 
-
 const styles = StyleSheet.create({
   goalItem: {
     margin: 8,
