@@ -1,41 +1,38 @@
 
 import { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet,
+         View,
+         FlatList} from 'react-native';
+
+import GoalItem from "./Components/GoalItem"; // In JSX, we wants to be clear taht this is custom components so it's starting with capital letter
+import GoalInput from "./Components/GoalInput";
 
 export default function App() {
-
-  const [enteredText, setEnteredGoalText] = useState('');
   const [courseGoals, setCourseGoals] = useState([]);
-  // setEnteredGoalText - can be updated with this
   // setCourseGoals - updating function
 
-  function goalInputHandler(enteredText) {
-    setEnteredGoalText(enteredText);
-  };
-
-  function addGoalHandler() {
+  function addGoalHandler(enteredText) {
     setCourseGoals( (currentCourseGoals) => [
       ...currentCourseGoals,
-      enteredText
+      // { text: enteredText, key: Math.random().toString() }
+      { text: enteredText, id: Math.random().toString() } // we need to use keyExtractor for this
+      // enteredText
     ]);
   };
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder='Your goal!'
-          onChangeText={goalInputHandler}
-        />
-        <Button title='Add Goal' onPress={addGoalHandler} />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
       <View style={ styles.goalsContainer }>
-        { courseGoals.map( (goal) => (
-            <View style={styles.goalItem} key={goal}>
-              <Text style={styles.goalText}>{goal}</Text>
-            </View>
-          ))}
+        <FlatList
+          data={courseGoals}
+          renderItem={ (itemData) => {
+            return <GoalItem text={itemData.item.text} />
+          }}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+          alwaysBounceVertical={false} />
       </View>
     </View>
   );
@@ -47,33 +44,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     flex: 1
   },
-  inputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    borderBottomColor: '#cccccc',
-    borderBottomWidth: 1
-  },
-  textInput: {
-    borderWidth: 1,
-    borderBlockColor: '#cccccc',
-    width: '70%',
-    marginRight: 8,
-    padding: 8
-  },
+  // inputContainer: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   marginBottom: 24,
+  //   borderBottomColor: '#cccccc',
+  //   borderBottomWidth: 1
+  // },
+  // textInput: {
+  //   borderWidth: 1,
+  //   borderBlockColor: '#cccccc',
+  //   width: '70%',
+  //   marginRight: 8,
+  //   padding: 8
+  // },
   goalsContainer: {
     flex: 5
-  },
-  goalItem: {
-    margin: 8,
-    padding: 8,
-    borderRadius: 6, // would not work on iOS
-    backgroundColor: '#5e0acc',
-    lineHeight: 20,
-  },
-  goalText: {
-    color: 'white',
   }
 });
